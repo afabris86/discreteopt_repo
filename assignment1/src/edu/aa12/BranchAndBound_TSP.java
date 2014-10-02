@@ -1,6 +1,8 @@
 package edu.aa12;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.PriorityQueue;
 
 import edu.aa12.DisjointSet.DSNode;
@@ -126,7 +128,14 @@ public class BranchAndBound_TSP {
 
 		//TODO: See assignment text
 		
-		return 0;
+		// call Kruskal
+		// alter cost on (copy?) of graph object and call Kruskal
+		// Repeat / how may iteration
+		// Calculate lb with initial cost matrix and return
+		
+		double lb = new OneTreeLb(graph, node).computeLbLag();
+		
+		return lb;
 	}
 	
 	/** Assuming that n represents a valid hamiltonian tour return the length of the tour */

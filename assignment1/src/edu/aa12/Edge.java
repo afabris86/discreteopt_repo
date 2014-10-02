@@ -1,7 +1,7 @@
 package edu.aa12;
 
 /** An edge in a graph, represented by the indices of the vertices. */
-public class Edge {
+public class Edge implements Comparable{
 	public int u,v;
 	
 	public Edge(int u, int v){
@@ -19,5 +19,11 @@ public class Edge {
 	
 	public String toString(){
 		return String.format("Edge[%d-%d]",u,v);
+	}
+
+	@Override
+	public int compareTo(Object o) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }

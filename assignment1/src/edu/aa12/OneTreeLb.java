@@ -29,14 +29,20 @@ public class OneTreeLb{
 		GraphImp mod = new GraphImp(nxtVertexCoords, this.graph, this.node);
 		
 		List<Edge> minSpanTree = kruskal.minimumSpanningTree(mod, node,true);
+		// we have to increment the edge index
+		for(Edge e: minSpanTree){
+			e.u++;
+			e.v++;
+		}
+		
 		List<Edge> cheapest = mod.findCheapest();
 		
 		minSpanTree.addAll(cheapest);
+		minSpanTree.addAll(mod.includedEdgesWithoutOneVertex);
 		
-		System.out.println("\n");
-		for(Edge e : minSpanTree){
-			System.out.println(" " + e.u + "<->" + e.v + " ");
-		}
+		//TODO: Delete but nice for debugging
+		//System.out.println(this.node.toString());
+		//PrintRoute(minSpanTree);
 		
 		// Assert that num edges = num veterex 
 		
@@ -57,14 +63,19 @@ public class OneTreeLb{
 	}
 	
 	private double GetCost(List<Edge> path){
+		//PrintRoute(path);
 		double result = 0;
 		for(Edge e : path){
-			int u = (e.u == 0) ? 0 : e.u +1; 
-			int v = (e.v == 0) ? 0 : e.v +1; 
-			
-			result = result + graph.getDistance(u, v);
+			result = result + graph.getDistance(e.u, e.v);
 		}
 		return result;
+	}
+	
+	private void PrintRoute(List<Edge> path){
+		System.out.println("");
+		for(Edge e : path){
+			System.out.println(" " + e.u + "<->" + e.v + " ");
+		}
 	}
 }
 

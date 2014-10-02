@@ -8,9 +8,8 @@ public  class GraphImp extends Graph{
 	
 	BnBNode node;
 	public List<EdgeWithDistance> potentialEdges = new ArrayList<EdgeWithDistance>();
-	public List<EdgeWithDistance> includedEdges = new ArrayList<EdgeWithDistance>();
-	
-	double[][] costsOfOneEdge;
+	public List<Edge> includedEdgesWithoutOneVertex = new ArrayList<Edge>();
+	public List<EdgeWithDistance> includedEdgesWithOneVertex = new ArrayList<EdgeWithDistance>();
 	
 	public GraphImp(double[][] nxtVertexCoords, Graph g, BnBNode n){
 		super(nxtVertexCoords);
@@ -30,10 +29,11 @@ public  class GraphImp extends Graph{
 		// Add potential or included edges to one vertex
 		while(node.parent != null){
 			if(node.edge.v != 0 && node.edge.u != 0){
-				//do nothing
+				if(node.edgeIncluded)
+					includedEdgesWithoutOneVertex.add(node.edge);
 			}else{
 				if(node.edgeIncluded)
-					includedEdges.add(new EdgeWithDistance(node.edge, g.getDistance(node.edge.u, node.edge.v)));
+					includedEdgesWithOneVertex.add(new EdgeWithDistance(node.edge, g.getDistance(node.edge.u, node.edge.v)));
 				
 				potentialEdges.remove(node.edge);
 			}
@@ -45,24 +45,23 @@ public  class GraphImp extends Graph{
 	public List<Edge> findCheapest(){
 		ArrayList<Edge> minimal = new ArrayList<Edge>();
 		
-		if(includedEdges.size() == 2){
-			minimal.add(includedEdges.get(0));
-			minimal.add(includedEdges.get(1));
+		if(includedEdgesWithOneVertex.size() == 2){
+			minimal.add(includedEdgesWithOneVertex.get(0));
+			minimal.add(includedEdgesWithOneVertex.get(1));
 		}
 		else
 		{
 			List<EdgeWithDistance> edges = new ArrayList<EdgeWithDistance>(potentialEdges);
 			
-			if(includedEdges.size() == 0){
+			if(includedEdgesWithOneVertex.size() == 0){
 				Edge first = Collections.min(edges);
 				minimal.add(first);
 				edges.remove(first);
 				minimal.add(Collections.min(edges));
-				
 			}
 			else 
 			{
-				minimal.add(includedEdges.get(0));
+				minimal.add(includedEdgesWithOneVertex.get(0));
 				minimal.add(Collections.min(edges));
 			}
 		}
@@ -70,6 +69,6 @@ public  class GraphImp extends Graph{
 	}
 	
 	public void updateCost(List<Edge> solution){
-		//Do stuff
+		// Remember to alter cost of 1) all edges not ending in zero and 2) all edges ending in zero
 	}
 }

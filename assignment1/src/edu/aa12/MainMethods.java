@@ -12,8 +12,11 @@ public class MainMethods {
 		BranchAndBound_TSP solver = new BranchAndBound_TSP(g);
 		long start = System.nanoTime();
 		BnBNode n = solver.solve();
+		
+		
 		long end = System.nanoTime();
 		System.out.printf("Took %.2fms\n",(end-start)/1000000.0);
+		System.out.printf("LB is: "+n.lowerBound);
 		System.out.println(n);
 		Visualization.visualizeSolution(g, n);//Requires ProGAL (www.diku.dk/~rfonseca/ProGAL)
 	}

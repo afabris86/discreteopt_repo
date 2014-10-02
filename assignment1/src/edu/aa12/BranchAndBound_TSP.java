@@ -125,15 +125,10 @@ public class BranchAndBound_TSP {
 		if(node.edgesDefined==graph.getVertices()) {
 			return objectiveValue(node);
 		}
-
-		//TODO: See assignment text
 		
-		// call Kruskal
-		// alter cost on (copy?) of graph object and call Kruskal
-		// Repeat / how may iteration
-		// Calculate lb with initial cost matrix and return
-		
+		//return 0;
 		double lb = new OneTreeLb(graph, node).computeLbLag();
+		//System.out.println("\n" + lb);
 		
 		return lb;
 	}

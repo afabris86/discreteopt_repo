@@ -18,7 +18,7 @@ public class Kruskal {
 	 * Find the minimum spanning tree in a graph where included edges in <code>node</code> are 
 	 * contracted and excluded edges in <code>node</code> are disregarded. 
 	 */
-	public List<Edge> minimumSpanningTree(final Graph graph, BnBNode node){
+	public List<Edge> minimumSpanningTree(final Graph graph, BnBNode node, boolean isMSTWithOutFirst){
 		for(Edge e: graph.edges){
 			nodes[e.u] = ds.makeSet(e.u);
 			nodes[e.v] = ds.makeSet(e.v); 
@@ -27,9 +27,25 @@ public class Kruskal {
 		List<Edge> mstEdges = new LinkedList<Edge>(graph.edges);
 		BnBNode n = node;
 		while(n.parent!=null){
-			if(n.edgeIncluded) 	ds.union(nodes[n.edge.u], nodes[n.edge.v]);		//Contract included edges
-			else				mstEdges.remove(n.edge);						//Disregard excluded edges
-			n=n.parent;
+			
+			//NOTE: We added
+			if(isMSTWithOutFirst){
+				if(n.edge.u ==0 || n.edge.v == 0 ){
+					n=n.parent;
+					continue;
+				}
+				
+				Edge dummyEdge = new Edge(n.edge.u-1, n.edge.v -1);
+				
+				if(n.edgeIncluded) 	ds.union(nodes[dummyEdge.u], nodes[dummyEdge.v]);		//Contract included edges
+				else				mstEdges.remove(dummyEdge);						//Disregard excluded edges
+				n=n.parent;
+			}
+			else{
+				if(n.edgeIncluded) 	ds.union(nodes[n.edge.u], nodes[n.edge.v]);		//Contract included edges
+				else				mstEdges.remove(n.edge);						//Disregard excluded edges
+				n=n.parent;
+			}
 		}
 		
 		List<Edge> tmp = new ArrayList<Edge>(mstEdges);

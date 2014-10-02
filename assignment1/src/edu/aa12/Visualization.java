@@ -51,7 +51,7 @@ public class Visualization {
 	
 	
 	public static void visualizeMST(Graph g, BnBNode n){
-		List<Edge> edges = new Kruskal().minimumSpanningTree(g, n);
+		List<Edge> edges = new Kruskal().minimumSpanningTree(g, n,false);
 
 		J2DScene scene = J2DScene.createJ2DSceneInFrame();
 		int i=0;

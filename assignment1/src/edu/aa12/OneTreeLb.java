@@ -11,6 +11,9 @@ public class OneTreeLb{
 	
 	private final Kruskal kruskal = new Kruskal();
 	
+	private static int numLBCallCalls = 0;
+	private final int maxNumLPRelaxation = 1;
+	
 	public OneTreeLb(Graph graph, BnBNode node){
 		this.graph = graph;
 		this.node = node;
@@ -18,7 +21,10 @@ public class OneTreeLb{
 	
 	public double computeLbLag(){
 		double[][] nxtVertexCoords = new double[graph.vertexCoords.length - 1][2];
-		double currrentSolution = 0;
+		double previousLB = 0;
+		double currentLB = 0;
+		int numLPRelaxation = 0;
+		List<Edge> currentEdges;
 		
 		int k = 0;
 		for(int i = 1 ; i < graph.vertexCoords.length ; i++ ){
@@ -27,55 +33,57 @@ public class OneTreeLb{
 		}
 		
 		GraphImp mod = new GraphImp(nxtVertexCoords, this.graph, this.node);
+		currentEdges = GetOneTree(mod);
+		currentLB = mod.GetCost(currentEdges, this.graph);
 		
-		List<Edge> minSpanTree = kruskal.minimumSpanningTree(mod, node,true);
+		if(Utility.IsATour(graph, currentEdges)){
+			/*if(Utility.IsDebug){
+				System.out.println("Found tour in first hit. Lb is: " + currentLB);
+				Utility.PrintRoute(currentEdges);
+			}*/
+			return currentLB;
+		}
+		
+		do{
+			numLPRelaxation++;
+			previousLB = currentLB;
+			
+			if(Utility.IsDebug && numLPRelaxation == 1 && numLBCallCalls % Utility.NumLBCallCalls == 0)
+				mod.updateCost(currentEdges,true);
+			else
+				mod.updateCost(currentEdges);
+			
+			currentEdges = GetOneTree(mod);
+			currentLB = mod.GetCost(currentEdges, this.graph);
+			
+			if(Utility.IsDebug && numLBCallCalls % Utility.NumLBCallCalls == 0)
+				System.out.println("Itreation: " + numLPRelaxation + ", previous LB: " + previousLB + ", new LB: " + currentLB);
+		} while(numLPRelaxation < this.maxNumLPRelaxation && !Utility.IsATour(graph, currentEdges));
+		
+		
+		if(Utility.IsDebug){
+			numLBCallCalls++;
+			if(numLBCallCalls % Utility.NumLBCallCalls == 0)
+				System.out.println("Num calls to computeLbLag: " + numLBCallCalls + ". The lb is: " + currentLB);
+		}
+		
+		return currentLB;
+	}
+	
+	private List<Edge> GetOneTree(GraphImp g){
+		List<Edge> oneTree = new ArrayList<Edge>();
+		List<Edge> mstEdges = kruskal.minimumSpanningTree(g, this.node,true);
+		
 		// we have to increment the edge index
-		for(Edge e: minSpanTree){
-			e.u++;
-			e.v++;
-		}
+		for(Edge e: mstEdges) oneTree.add(new Edge(e.u+1,e.v+1));
 		
-		List<Edge> cheapest = mod.findCheapest();
+		oneTree.addAll(g.findCheapestEdgesToOneVertex());
+		oneTree.addAll(g.includedEdgesWithoutOneVertex);
 		
-		minSpanTree.addAll(cheapest);
-		minSpanTree.addAll(mod.includedEdgesWithoutOneVertex);
+		if(Utility.IsDebug)
+			assert (this.graph.vertexCoords.length == oneTree.size()) : "Number of notes did not match did not match in computeLbLag with number of vertecies";
 		
-		//TODO: Delete but nice for debugging
-		//System.out.println(this.node.toString());
-		//PrintRoute(minSpanTree);
-		
-		// Assert that num edges = num veterex 
-		
-		currrentSolution = GetCost(minSpanTree);
-		
-		// Assert cost > 0
-		
-		//while(true){
-		//	mod.updateCost(minSpanTree);
-		//	minSpanTree = kruskal.minimumSpanningTree(mod, node);
-		//	cheapest = mod.findCheapest();
-		//	minSpanTree.addAll(cheapest);
-		//	
-		//	currrentSolution = GetCost(minSpanTree);
-		//}
-		
-		return currrentSolution;
-	}
-	
-	private double GetCost(List<Edge> path){
-		//PrintRoute(path);
-		double result = 0;
-		for(Edge e : path){
-			result = result + graph.getDistance(e.u, e.v);
-		}
-		return result;
-	}
-	
-	private void PrintRoute(List<Edge> path){
-		System.out.println("");
-		for(Edge e : path){
-			System.out.println(" " + e.u + "<->" + e.v + " ");
-		}
+		return oneTree;
 	}
 }
 

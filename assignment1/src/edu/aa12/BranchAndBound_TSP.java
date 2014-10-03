@@ -130,7 +130,7 @@ public class BranchAndBound_TSP {
 		
 		//TODO: Delete
 		double lb = new OneTreeLb(graph, node).computeLbLag();
-		System.out.println("\n" + lb);
+		//System.out.println("\n" + lb);
 		return lb;
 	}
 	

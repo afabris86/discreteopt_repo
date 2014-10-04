@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
 
+import edu.aa12.BnBNode.UpperBoundMethod;
 import edu.aa12.DisjointSet.DSNode;
 
 /**
@@ -40,6 +41,7 @@ public class BranchAndBound_TSP {
 		
 		BnBNode root = new BnBNode(null,null, false);
 		root.lowerBound = Double.POSITIVE_INFINITY;
+		root.SetUpperBound(graph, UpperBoundMethod.NearestNeighbour);
 		nodePool.add(root);
 		
 		BnBNode best = root;
@@ -128,10 +130,7 @@ public class BranchAndBound_TSP {
 		
 		//return 0;
 		
-		//TODO: Delete
-		double lb = new OneTreeLb(graph, node).computeLbLag();
-		//System.out.println("\n" + lb);
-		return lb;
+		return new OneTreeLb(graph, node).computeLbLag();
 	}
 	
 	/** Assuming that n represents a valid hamiltonian tour return the length of the tour */

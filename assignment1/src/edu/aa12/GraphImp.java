@@ -75,6 +75,7 @@ public  class GraphImp extends Graph{
 		return minimal;
 	}
 	
+	/*
 	public double GetCost(List<Edge> path, Graph g){
 		//System.out.println(path.toString());
 		double result = 0;
@@ -86,11 +87,11 @@ public  class GraphImp extends Graph{
 			assert (result > 0) : "Computed LB of zero";
 		
 		return result;
-	}
+	}*/
 	
-	/* NOT WORKING
+	// See: http://mat.gsia.cmu.edu/classes/mstc/relax/node10.html
 	public double GetCost(List<Edge> path){
-		System.out.println(path.toString());
+		//System.out.println(path.toString());
 		
 		double result = 0;
 		for(Edge e : path){
@@ -98,7 +99,7 @@ public  class GraphImp extends Graph{
 				int notOneVertexIndex = (e.u==0) ? e.v : e.u; 
 				for(EdgeWithDistance innerEdge : allOneVertexEdges){
 					if(innerEdge.u == notOneVertexIndex || innerEdge.v == notOneVertexIndex){
-						System.out.println("Made it, distance is: " + innerEdge.distance);
+						//System.out.println("Made it, distance is: " + innerEdge.distance);
 						result += innerEdge.distance;
 						break;
 					}
@@ -106,25 +107,28 @@ public  class GraphImp extends Graph{
 				continue;
 			}
 			
-			System.out.println("Made it too, distance is: " + this.getDistance(e.u-1, e.v-1));
+			//System.out.println("Made it too, distance is: " + this.getDistance(e.u-1, e.v-1));
 			result += this.getDistance(e.u-1, e.v-1);
 		}
 		
-		if(Utility.IsDebug)
+		/*if(Utility.IsDebug)
 			assert (result > 0) : "Computed LB of zero";
+		*/
 		
 		return result;
 	}
-	*/
 	
-	public void updateCost(List<Edge> solution){
-		updateCost(solution, false);
+	public void updateCost(List<Edge> solution, double upperBound){
+		updateCost(solution, false,upperBound);
 	}
 	
-	public void updateCost(List<Edge> solution, boolean isPrinting){
-		int [] punishment = new int[this.vertexCoords.length + 1];
+	public void updateCost(List<Edge> solution, boolean isPrinting, double upperBound){
+		double [] punishment = new double[this.vertexCoords.length + 1];
 		Arrays.fill(punishment, -2);
+		double stepLength;
+		double stepLengthDenominator = 0;
 		
+		// Fill out punishment
 		for(Edge e : solution){
 			punishment[e.u]++;
 			punishment[e.v]++;
@@ -136,9 +140,17 @@ public  class GraphImp extends Graph{
 			assert (sum == 0) : "Sum of punishment was not zero in updateCost";
 		}
 		
+		// Calculate step length
+		for(double p : punishment) stepLengthDenominator += Math.pow(p, 2);
+		stepLength = (upperBound - GetCost(solution)) / stepLengthDenominator;
+		
+		// Scale punishment
+		for(int i=0; i < punishment.length; i++) 
+			punishment[i] = stepLength * punishment[i];
+		
 		if(isPrinting){
-			System.out.println("Distance matrix before update");
-			PrintDistanceMatrix();
+			/*System.out.println("Distance matrix before update");
+			PrintDistanceMatrix();*/
 		}
 		
 		// Update cost of edges incident to vertex one
@@ -157,16 +169,16 @@ public  class GraphImp extends Graph{
 		}
 		
 		if(isPrinting){
-			System.out.println("Previous OneTree solution:");
-			Utility.PrintRoute(solution);
-			
-			String debugMessage = "Punishments are: ";
+			/*System.out.println("Previous OneTree solution:");
+			Utility.PrintRoute(solution);*/
+			System.out.println("Step length is: " + stepLength + " = (" + upperBound + "-" + GetCost(solution) + ")/" + stepLengthDenominator);
+			String debugMessage =  ". Punishments are: ";
 			for(int i = 0; i < punishment.length; i++) 
-				debugMessage += "V" + String.format("%-2d", i) + ": " + String.format("%-4d", punishment[i]);
+				debugMessage += " V" + String.format("%-2d", i) + ": " + String.format("%-9.6f", punishment[i]);
 			System.out.println(debugMessage);
 			
-			System.out.println("Distance matrix after update");
-			PrintDistanceMatrix();
+			/*System.out.println("Distance matrix after update");
+			PrintDistanceMatrix();*/
 		}
 	}
 	

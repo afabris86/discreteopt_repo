@@ -13,6 +13,7 @@ public class BnBNode{
 	public final Edge edge;
 	/** True if <code>edge</code> is included, false otherwise. */
 	public final boolean edgeIncluded;
+	private double upperBound = Double.POSITIVE_INFINITY;
 	
 	public BnBNode(BnBNode parent, Edge edge, boolean edgeIncluded){
 		this.parent = parent;
@@ -31,5 +32,30 @@ public class BnBNode{
 		
 		for(int i=0;i<depth;i++) spaces+=" ";
 		return parent.toString()+"\n"+spaces+String.format("BnBNode[%s,%b]",edge.toString(),edgeIncluded);
+	}
+	
+	public double GetUpperBound(){
+		if(upperBound != Double.POSITIVE_INFINITY) return upperBound;
+		if(parent == null) return Double.POSITIVE_INFINITY;
+		
+		return parent.GetUpperBound();
+	}
+	
+	public void SetUpperBound(Graph graph, UpperBoundMethod method){
+		switch(method){
+		case NearestNeighbour:
+			try
+			{
+				this.upperBound = Utility.GetCost(NearestNeighbour.GetTour(graph, this),graph);
+			}
+			catch(Exception e){
+				if(Utility.IsDebug)
+					System.out.println("Failed to compute ub with NearestNeighbour");
+			}
+		}
+	}
+	
+	public enum UpperBoundMethod {
+		NearestNeighbour;
 	}
 }

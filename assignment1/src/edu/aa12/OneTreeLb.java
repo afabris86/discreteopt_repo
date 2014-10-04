@@ -13,7 +13,7 @@ public class OneTreeLb{
 	private final Kruskal kruskal = new Kruskal();
 	
 	private static int numLBCallCalls = 0;
-	private final int maxNumLPRelaxation = 3;
+	private final int maxNumLPRelaxation = 10;
 	
 	public OneTreeLb(Graph graph, BnBNode node){
 		this.graph = graph;

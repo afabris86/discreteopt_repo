@@ -3,8 +3,8 @@ package edu.aa12;
 public class MainMethods {
 
 	public static void main(String[] args){
-		//solveGraph(new Instance1());
-		solveGraph(new Instance2());
+		solveGraph(new Instance1());
+		//solveGraph(new Instance2());
 		//solveGraph(new Instance3());
 	}
 	

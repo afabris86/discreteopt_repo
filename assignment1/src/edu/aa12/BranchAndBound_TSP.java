@@ -19,11 +19,12 @@ public class BranchAndBound_TSP {
 	private final Graph graph;
 	/** The number of BnBNodes generated */
 	private long nodesGenerated = 0;
-	private static final int levelToRecomputeUpperBound = 20; //TODO: How to set?
+	private static int levelToRecomputeUpperBound; //TODO: How to set?
 	
 	/** Construct a problem instance */
 	public BranchAndBound_TSP(Graph g){
 		graph = g;
+		levelToRecomputeUpperBound = g.getVertices();
 	}
 	
 	/** Find the shortest tour visiting all nodes exactly once and return the result as a BnBNode. */

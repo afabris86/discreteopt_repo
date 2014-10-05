@@ -1,5 +1,8 @@
 package edu.aa12;
 
+import java.util.List;
+
+
 /** 
  * A node in the branch-and-bound tree.  
  */
@@ -46,7 +49,9 @@ public class BnBNode{
 		
 		switch(method){
 		case NearestNeighbour:
-			this.upperBound = Utility.GetCost(NearestNeighbour.GetTour(graph, this),graph);
+			List<Edge> tour = NearestNeighbour.GetTour(graph, this);
+			
+			this.upperBound = (tour == null) ? Double.POSITIVE_INFINITY : Utility.GetCost(tour, graph);
 			if(Utility.IsDebug)
 				System.out.println("Computed ub with NN and got: " + this.upperBound);
 		}

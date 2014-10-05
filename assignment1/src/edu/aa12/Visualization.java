@@ -30,6 +30,10 @@ public class Visualization {
 		
 	}
 	
+	public static void visualizeSolution(Graph g, List<Edge> edges){
+		visualizeSolution(g, Utility.GetFinalNode(edges));
+	}
+	
 	public static void visualizeSolution(Graph g, BnBNode n){
 		J2DScene scene = J2DScene.createJ2DSceneInFrame();
 		for(Edge e: g.edges){

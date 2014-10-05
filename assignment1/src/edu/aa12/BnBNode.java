@@ -46,14 +46,9 @@ public class BnBNode{
 		
 		switch(method){
 		case NearestNeighbour:
-			try
-			{
-				this.upperBound = Utility.GetCost(NearestNeighbour.GetTour(graph, this),graph);
-			}
-			catch(Exception e){
-				if(Utility.IsDebug)
-					System.out.println("Failed to compute ub with NearestNeighbour");
-			}
+			this.upperBound = Utility.GetCost(NearestNeighbour.GetTour(graph, this),graph);
+			if(Utility.IsDebug)
+				System.out.println("Computed ub with NN and got: " + this.upperBound);
 		}
 	}
 	

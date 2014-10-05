@@ -27,6 +27,6 @@ public class MainMethods {
 		System.out.printf("Took %.2fms\n",(end-start)/1000000.0);
 		System.out.println(n);
 		
-		Visualization.visualizeSolution(g, cplexSolver.GetFinalNode());//Requires ProGAL (www.diku.dk/~rfonseca/ProGAL)
+		Visualization.visualizeSolution(g, Utility.GetFinalNode(cplexSolver.tour));//Requires ProGAL (www.diku.dk/~rfonseca/ProGAL)
 	}
 }

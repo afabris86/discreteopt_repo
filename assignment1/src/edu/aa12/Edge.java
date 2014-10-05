@@ -20,4 +20,8 @@ public class Edge{
 	public String toString(){
 		return String.format("Edge[%d-%d]",u,v);
 	}
+	
+	public boolean ConnectsVertercies(int i, int j){
+		return (this.u == i && this.v == j) || (this.v == i && this.u == j); 
+	}
 }

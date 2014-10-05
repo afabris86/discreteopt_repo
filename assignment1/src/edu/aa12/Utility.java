@@ -7,13 +7,16 @@ import java.util.List;
 
 public class Utility {
 	// Remember to turn on assertions: http://stackoverflow.com/questions/5509082/eclipse-enable-assertions
-	public static final boolean IsDebug = false;
-	public static final boolean IsSettingUpperBound = false;
+	public static final boolean IsDebug = true;
+	public static final boolean IsSettingUpperBound = true;
 	public static final int NumLBCallCalls = 100;
 	
 	public static void PrintRoute(List<Edge> path){
 		String output = "";
-		for(Edge e : path) output += " | " + e.u + "<->" + e.v;
+		for(Edge e : path) {
+			if(e == null) continue;
+			output += " | " + e.u + "<->" + e.v;
+		}
 		System.out.println(output);
 	}
 	
@@ -74,5 +77,12 @@ public class Utility {
 			assert (result > 0) : "Computed LB of zero";
 		
 		return result;
+	}
+	
+	public static BnBNode GetFinalNode(List<Edge> tour){
+		BnBNode node = new BnBNode(null,null,false);
+		for(Edge e: tour)
+			node = new BnBNode(node,e,true);
+		return node;
 	}
 }

@@ -120,13 +120,6 @@ public class CPLEXSolver {
 		return null;
 	}
 	
-	public BnBNode GetFinalNode(){
-		BnBNode node = new BnBNode(null,null,false);
-		for(Edge e: tour)
-			node = new BnBNode(node,e,true);
-		return node;
-	}
-	
 	private  class LocalGraphImp extends Graph{
 		LocalGraphImp(double[][] coords) {
 			super(coords);

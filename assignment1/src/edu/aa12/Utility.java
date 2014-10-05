@@ -8,6 +8,7 @@ import java.util.List;
 public class Utility {
 	// Remember to turn on assertions: http://stackoverflow.com/questions/5509082/eclipse-enable-assertions
 	public static final boolean IsDebug = false;
+	public static final boolean IsSettingUpperBound = false;
 	public static final int NumLBCallCalls = 100;
 	
 	public static void PrintRoute(List<Edge> path){

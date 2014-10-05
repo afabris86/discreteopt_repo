@@ -42,6 +42,8 @@ public class BnBNode{
 	}
 	
 	public void SetUpperBound(Graph graph, UpperBoundMethod method){
+		if(!Utility.IsSettingUpperBound) return;
+		
 		switch(method){
 		case NearestNeighbour:
 			try
@@ -53,6 +55,11 @@ public class BnBNode{
 					System.out.println("Failed to compute ub with NearestNeighbour");
 			}
 		}
+	}
+	
+	public void SetUpperBound(double upperB){
+		if(!Utility.IsSettingUpperBound) return;
+		this.upperBound = upperB;
 	}
 	
 	public enum UpperBoundMethod {

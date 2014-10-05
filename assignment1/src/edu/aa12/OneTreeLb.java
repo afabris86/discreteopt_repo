@@ -38,11 +38,12 @@ public class OneTreeLb{
 		currentEdges = GetOneTree(mod);
 		currentLB = mod.GetCost(currentEdges);
 		
+		FoundTour = Utility.IsATour(graph, currentEdges);
 		double upperbound = node.GetUpperBound();
 		while(upperbound != Double.POSITIVE_INFINITY && 
 				numLPRelaxation <= this.maxNumLPRelaxation && 
 				Math.abs(currentLB - previousLB) > sufficientConvergence &&
-				!Utility.IsATour(graph, currentEdges)){
+				!FoundTour){
 			numLPRelaxation++;
 			previousLB = currentLB;
 			
@@ -53,6 +54,7 @@ public class OneTreeLb{
 			
 			currentEdges = GetOneTree(mod);
 			currentLB = mod.GetCost(currentEdges);
+			FoundTour = Utility.IsATour(graph, currentEdges);
 			
 			if(Utility.IsDebug && numLBCallCalls % Utility.NumLBCallCalls == 0)
 				System.out.println("Itreation: " + numLPRelaxation + ", previous LB: " + previousLB + ", new LB: " + currentLB);
@@ -65,7 +67,11 @@ public class OneTreeLb{
 				System.out.println("Num calls to computeLbLag: " + numLBCallCalls + ". The lb is: " + currentLB);
 		}
 		
-		FoundTour = Utility.IsATour(graph, currentEdges);
+		if(this.FoundTour){
+			node.SetUpperBound(currentLB);
+			if(Utility.IsDebug)
+				System.out.println("Found tour at depth: " + this.node.depth + " with value: " + currentLB);
+		}
 		
 		return currentLB;
 	}

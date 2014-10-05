@@ -5,6 +5,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
 
+import com.sun.org.apache.xerces.internal.dom.DeepNodeListImpl;
+
 import edu.aa12.BnBNode.UpperBoundMethod;
 import edu.aa12.DisjointSet.DSNode;
 
@@ -17,6 +19,7 @@ public class BranchAndBound_TSP {
 	private final Graph graph;
 	/** The number of BnBNodes generated */
 	private long nodesGenerated = 0;
+	private static final int levelToRecomputeUpperBound = 20; //TODO: How to set?
 	
 	/** Construct a problem instance */
 	public BranchAndBound_TSP(Graph g){
@@ -108,6 +111,8 @@ public class BranchAndBound_TSP {
 		if(uAdjMax>2 && vAdjMax>2){
 			n = new BnBNode(node, nextEdge, false);
 			n.lowerBound = lowerBound(n);
+			if(n.depth % levelToRecomputeUpperBound == 0)
+				n.SetUpperBound(graph,UpperBoundMethod.NearestNeighbour);
 			nodePool.add(n);
 			nodesGenerated++;
 		}
@@ -116,6 +121,8 @@ public class BranchAndBound_TSP {
 		if( (node.edgesDefined==graph.getVertices()-1||ds.find(vertexSets[nextEdge.u])!=ds.find(vertexSets[nextEdge.v])) && uAdj<2 && vAdj<2){
 			n = new BnBNode(node,nextEdge,true);
 			n.lowerBound = lowerBound(n);
+			if(n.depth % levelToRecomputeUpperBound == 0)
+				n.SetUpperBound(graph,UpperBoundMethod.NearestNeighbour);
 			nodePool.add(n);
 			nodesGenerated++;
 		}

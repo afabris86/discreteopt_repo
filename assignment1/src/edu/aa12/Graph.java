@@ -44,4 +44,18 @@ public abstract class Graph {
 		incidentEdges[j].add(e);
 		
 	}
+	
+	public void PrintDistanceMatrix(){
+		String output = "  ";
+		for(int i = 1; i <= vertexCoords.length;i++) output += "  "  + String.format("%-8d", i);
+		System.out.println(output);
+		
+		int i =0;
+		for(double[] row : this.distances){
+			i++;
+			output = String.format("%-2d", i);
+			for(double d : row) output += "  "  + String.format("%-8.2f", d);
+			System.out.println(output);
+		}
+	}
 }

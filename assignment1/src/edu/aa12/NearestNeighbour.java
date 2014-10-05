@@ -2,12 +2,14 @@ package edu.aa12;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 public class NearestNeighbour {
 	
-	/** Initially I thought it would when the some notes was fixed, some excluded or when there are not edges between all notes. However, this obviously does not work! */
-	public static List<Edge> GetTour(Graph g, BnBNode n){
+	/** Initially I thought it would when the some notes was fixed, some excluded or when there are not edges between all notes. However, this obviously does not work! 
+	 * @throws Exception */
+	public static List<Edge> GetTour(Graph g, BnBNode n) throws Exception{
 		List<Edge> result = new ArrayList<Edge>();
 		
 		List<Edge> potentialEdges = new ArrayList<Edge>(g.edges);
@@ -25,6 +27,7 @@ public class NearestNeighbour {
 			potentialEdges.remove(n.edge);
 			if(n.edgeIncluded)
 				includedEdges.add(n.edge);
+			n = n.parent;
 		}
 		
 		// First find the tree that zero vertex is a part of
@@ -36,7 +39,7 @@ public class NearestNeighbour {
 		}
 		else if (result.size() == 1){
 			tailIndex = 0;
-			
+			System.out.println("Yo");
 			// Step as fare as possible in the one possible direction
 			headIndex = (result.get(0).u == 0) ? result.get(0).v : result.get(0).u;
 			do{
@@ -45,8 +48,18 @@ public class NearestNeighbour {
 				if(newEdges.size() == 0) break;
 				
 				nextEdge = newEdges.get(0);
-				includedEdges.remove(newEdges);
+				includedEdges.remove(nextEdge);
 				result.add(nextEdge);
+				
+				// Remove potential edges with previous head index
+				if(headIndex != 0){
+					for(Iterator<Edge> i = potentialEdges.iterator();i.hasNext(); ){
+						Edge e = i.next();
+						if(e.u == headIndex || e.v == headIndex)
+							i.remove();
+					}
+				}
+				
 				headIndex = (nextEdge.u == headIndex) ? nextEdge.v : nextEdge.u;
 			} while(newEdges.size() > 0);
 		}
@@ -61,8 +74,18 @@ public class NearestNeighbour {
 				if(newEdges.size() == 0) break;
 				
 				nextEdge = newEdges.get(0);
-				includedEdges.remove(newEdges);
+				includedEdges.remove(nextEdge);
 				result.add(nextEdge);
+				
+				// Remove potential edges with previous head index
+				if(headIndex != 0){
+					for(Iterator<Edge> i = potentialEdges.iterator();i.hasNext(); ){
+						Edge e = i.next();
+						if(e.u == headIndex || e.v == headIndex)
+							i.remove();
+					}
+				}
+				
 				headIndex = (nextEdge.u == headIndex) ? nextEdge.v : nextEdge.u;
 			} while(newEdges.size() > 0);
 			do{
@@ -71,8 +94,18 @@ public class NearestNeighbour {
 				if(newEdges.size() == 0) break;
 				
 				nextEdge = newEdges.get(0);
-				includedEdges.remove(newEdges);
+				includedEdges.remove(nextEdge);
 				result.add(nextEdge);
+				
+				// Remove potential edges with previous tail index
+				if(tailIndex != 0){
+					for(Iterator<Edge> i = potentialEdges.iterator();i.hasNext(); ){
+						Edge e = i.next();
+						if(e.u == tailIndex || e.v == tailIndex)
+							i.remove();
+					}
+				}
+				
 				tailIndex = (nextEdge.u == tailIndex) ? nextEdge.v : nextEdge.u;
 			} while(newEdges.size() > 0);
 		}
@@ -80,7 +113,11 @@ public class NearestNeighbour {
 		// Make list of "tailedges"
 		tailEdges = GetIncidentEdges(potentialEdges, tailIndex, Integer.MAX_VALUE);
 		
-		// Find the missing edges in tour
+		/*Utility.PrintRoute(result);
+		System.out.println("Initial head: " + headIndex + ", tail: " + tailIndex);
+		Utility.PrintRoute(tailEdges);*/
+		
+		//Find the missing edges in tour
 		do{
 			nextEdge = null;
 			// First check if edges is all ready included
@@ -115,14 +152,21 @@ public class NearestNeighbour {
 			headIndex = (nextEdge.u == headIndex) ? nextEdge.v : nextEdge.u;
 		} while(result.size() < g.vertexCoords.length - 1);
 		
+		
+		nextEdge = null;
 		// Add the cheapest or included one between head and tail
 		for(Edge e : tailEdges) {
 			if((e.u == headIndex && e.v == tailIndex) || 
 					(e.u == tailIndex && e.v == headIndex)){
-				result.add(e);
+				nextEdge = e;
 				break;
 			}
 		}
+		
+		if(nextEdge == null)
+			throw new Exception("Could finish route in NearestNeighbour between last two edges. It is due to restriction from node or avialable edges in graph");
+		
+		result.add(nextEdge);
 		
 		if(Utility.IsDebug){
 			System.out.println("Found the following route with ub of : " + Utility.GetCost(result, g));
@@ -130,7 +174,20 @@ public class NearestNeighbour {
 		}
 		
 		if(Utility.IsDebug)
-			assert (Utility.IsATour(g, result)) : "Result in NearestNeighbour is not a tour";
+			if(!Utility.IsATour(g, result)){
+				int[] degree = new int[g.vertexCoords.length];
+				for(Edge e : result){
+					degree[e.u]++;
+					degree[e.v]++;
+				}
+				
+				for(int i =0; i < degree.length; i++){
+					if(degree[i] == 2) continue;
+					System.out.println("Vertex " + i + " had degree " + degree[i] + " in NearestNeighbour result");
+				}
+				
+				assert (false) : "Result in NearestNeighbour is not a tour";
+			}
 		
 		return result;
 	}

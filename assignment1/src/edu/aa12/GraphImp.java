@@ -182,7 +182,7 @@ public  class GraphImp extends Graph{
 		}
 	}
 	
-	private void PrintDistanceMatrix(){
+	public void PrintDistanceMatrix(){
 		String output = "";
 		
 		for(EdgeWithDistance e : this.potentialOneVertexEdges) 
@@ -191,16 +191,6 @@ public  class GraphImp extends Graph{
 			output += e.u + "<->" + e.v + ": " + String.format("%-5.2f", e.distance) + "  ";
 		System.out.println(output);
 		
-		output = "  ";
-		for(int i = 1; i <= vertexCoords.length;i++) output += "  "  + String.format("%-8d", i);
-		System.out.println(output);
-		
-		int i =0;
-		for(double[] row : this.distances){
-			i++;
-			output = String.format("%-2d", i);
-			for(double d : row) output += "  "  + String.format("%-8.2f", d);
-			System.out.println(output);
-		}
+		super.PrintDistanceMatrix();
 	}
 }

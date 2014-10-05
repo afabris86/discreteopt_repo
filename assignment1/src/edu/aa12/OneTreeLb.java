@@ -13,7 +13,8 @@ public class OneTreeLb{
 	private final Kruskal kruskal = new Kruskal();
 	
 	private static int numLBCallCalls = 0;
-	private final int maxNumLPRelaxation = 10;
+	private static final int maxNumLPRelaxation = 10; // TODO: How to decide?
+	private static final double sufficientConvergence = Math.pow(10, -2); //TODO: How to decide?
 	
 	public OneTreeLb(Graph graph, BnBNode node){
 		this.graph = graph;
@@ -40,6 +41,7 @@ public class OneTreeLb{
 		double upperbound = node.GetUpperBound();
 		while(upperbound != Double.POSITIVE_INFINITY && 
 				numLPRelaxation <= this.maxNumLPRelaxation && 
+				Math.abs(currentLB - previousLB) > sufficientConvergence &&
 				!Utility.IsATour(graph, currentEdges)){
 			numLPRelaxation++;
 			previousLB = currentLB;

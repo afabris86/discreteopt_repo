@@ -24,7 +24,7 @@ public class BranchAndBound_TSP {
 	/** Construct a problem instance */
 	public BranchAndBound_TSP(Graph g){
 		graph = g;
-		levelToRecomputeUpperBound = g.getVertices();
+		levelToRecomputeUpperBound = Integer.MAX_VALUE;//g.getVertices() * 3;
 	}
 	
 	/** Find the shortest tour visiting all nodes exactly once and return the result as a BnBNode. */

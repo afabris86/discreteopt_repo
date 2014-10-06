@@ -39,6 +39,7 @@ public class OneTreeLb{
 		FoundTour = Utility.IsATour(graph, currentEdges);
 		double upperbound = node.GetUpperBound();
 		while(upperbound != Double.POSITIVE_INFINITY && 
+				currentLB < node.GetUpperBound() &&
 				numLPRelaxation <= Utility.maxNumLPRelaxation && 
 				Math.abs(currentLB - previousLB) > Utility.sufficientConvergence &&
 				!FoundTour){

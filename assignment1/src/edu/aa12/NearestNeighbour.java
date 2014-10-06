@@ -284,8 +284,9 @@ public class NearestNeighbour {
 		public String toString(){
 			return String.format("Path[%d-%d w " + intermediateVertercies.toString() + "]",head,tail);
 		}
-
-		public boolean CanMutuallyConnectOrCannot(List<Edge> potentialEdges, Path other){
+		
+		
+		/*public boolean CanMutuallyConnectOrCannot(List<Edge> potentialEdges, Path other){
 			int canConnectHeadAndHead = 0;
 			int canConnectHeadAndTail = 0;
 			int canConnectTailAndHead = 0;
@@ -316,6 +317,58 @@ public class NearestNeighbour {
 				return true;
 			
 			return false;
+		}*/
+		
+		public boolean CanMutuallyConnect(List<Edge> potentialEdges, Path other){
+			int canConnectHeadAndHead = 0;
+			int canConnectHeadAndTail = 0;
+			int canConnectTailAndHead = 0;
+			int canConnectTailAndTail = 0;
+			
+			for(Edge e: potentialEdges){
+				if(e.ConnectsVertercies(this.head, other.head)){
+					canConnectHeadAndHead = 1;
+				}
+				if (e.ConnectsVertercies(this.head, other.tail)){
+					canConnectHeadAndTail = 1;
+				}
+				if (e.ConnectsVertercies(this.tail, other.head)){
+					canConnectTailAndHead = 1;
+				}
+				if (e.ConnectsVertercies(this.tail, other.tail)){
+					canConnectTailAndTail = 1;
+				}
+				
+				if(canConnectHeadAndHead + canConnectTailAndTail == 2)
+					return true;
+				
+				if(canConnectHeadAndTail + canConnectTailAndHead == 2)
+					return true;
+			}
+			
+			return false;
+		}
+
+		public List<Path> GetConnectablePaths(List<Edge> potentialEdges,List<Path> paths) {
+			List<Path> connectablePaths = new ArrayList<Path>(); 
+			
+			for(Path path : paths){
+				if(path == this) continue;
+				for(Edge e: potentialEdges){
+					if(CanEdgeConnectPaths(e, path)){
+						connectablePaths.add(path);
+						break;
+					}
+				}
+			}
+			return connectablePaths;
+		}
+		
+		public boolean CanEdgeConnectPaths(Edge edge,Path other){
+			return edge.ConnectsVertercies(this.head, other.tail) ||
+					edge.ConnectsVertercies(this.head, other.tail) ||
+					edge.ConnectsVertercies(this.tail, other.head) ||
+					edge.ConnectsVertercies(this.tail, other.tail);
 		}
 	}
 	
@@ -360,12 +413,15 @@ public class NearestNeighbour {
 		}
 		
 		Path currentPath = paths.get(0);
+		List<Path> connectablePaths;
 		Edge connectingEdge;
 		boolean foundConnectingEdge;
 		double cheapestVal;
 		Path cheapestPath;
 		Edge cheapestEdge;
 		Edge e;
+		List<Path> innerPathsConnection;
+		boolean isDebuggingLoop = true;
 		
 		//System.out.println(paths.toString());
 		//System.out.println(currentPath.toString());
@@ -373,22 +429,20 @@ public class NearestNeighbour {
 			foundConnectingEdge = false;
 			
 			// See if any paths have to be connected
-			for(Path innerPath : paths){
-				if(currentPath == innerPath) continue;
-				if(innerPath.CanMutuallyConnectOrCannot(potentialEdges, currentPath)) continue;
+			connectablePaths = currentPath.GetConnectablePaths(potentialEdges, paths);
+			for(Path innerPath : currentPath.GetConnectablePaths(potentialEdges, paths)){
+				innerPathsConnection = innerPath.GetConnectablePaths(potentialEdges, paths);
+				if(currentPath.CanMutuallyConnect(potentialEdges, innerPath) ||
+						innerPathsConnection.size() > 2) continue;
 				
-				//System.out.println("Needs to connect with: " + innerPath.toString());
 				connectingEdge = GetCheapestEdge(potentialEdges,innerPath,currentPath,g);
 				result.add(connectingEdge);
 				currentPath.Merge(innerPath,connectingEdge);
 				paths.remove(innerPath);
 				foundConnectingEdge = true;
 				
-				//Utility.PrintRoute(result);
-				//System.out.println("Added " + connectingEdge.toString() + " due to accesability lag. The path went from " + innerPath.head + " to " + innerPath.tail);
-				
 				// Remove edges of cheapest path and current
-				//TODO: Was lazy. At mose there are only two new intermediate vertex which we need to check. I.e. redundant loops are performed ...
+				//TODO: Was lazy. At most there are only two new intermediate vertex which we need to check. I.e. redundant loops are performed ...
 				for(int i=0; i < potentialEdges.size(); i++)
 				{
 					e = potentialEdges.get(i);
@@ -399,6 +453,15 @@ public class NearestNeighbour {
 					}
 				}
 				
+				if(!isDebuggingLoop || !Utility.IsDebug) break;
+				
+				System.out.println("Needs to connect with: " + innerPath.toString());
+				System.out.println("Its potential paths to connect with are: " + innerPathsConnection.toString());
+				Utility.PrintRoute(result);
+				System.out.println("Added " + connectingEdge.toString() + " due to accesability lag. The path went from " + innerPath.head + " to " + innerPath.tail);
+				System.out.println(currentPath);
+				System.out.println(potentialEdges.toString());
+				
 				break;
 			}
 			if(foundConnectingEdge) continue;
@@ -407,10 +470,8 @@ public class NearestNeighbour {
 			cheapestVal = Double.POSITIVE_INFINITY;
 			cheapestPath = null;
 			cheapestEdge = null;
-			for(Path innerPath : paths){
-				if(currentPath == innerPath) continue;
+			for(Path innerPath : connectablePaths){
 				Edge pathEdge = GetCheapestEdge(potentialEdges, innerPath, currentPath, g,false);
-				if(pathEdge == null) continue;
 				double val = g.getDistance(pathEdge.u, pathEdge.v);
 				if(val < cheapestVal){
 					cheapestPath = innerPath;
@@ -420,20 +481,18 @@ public class NearestNeighbour {
 			}
 			
 			if(cheapestEdge == null || cheapestPath == null){
-				if(Utility.IsDebug)
+				if(Utility.IsDebug){
 					System.out.println("Did not find cheapest edge or cheapest val!");
-				result.addAll(includedEdges);
-				//Visualization.visualizeSolution(g, result);
-				//assert (false) : "Stuff failed. Is it an error?"; //TODO
+					result.addAll(includedEdges);
+					Visualization.visualizeSolution(g, result);
+				}
+				assert (false) : "Stuff failed. Is it an error?"; //TODO
 				return null;
 			}
 				
 			result.add(cheapestEdge);
 			currentPath.Merge(cheapestPath, cheapestEdge);
 			paths.remove(cheapestPath);
-			
-			//Utility.PrintRoute(result);
-			//System.out.println("Added " + cheapestPath.toString() + " cuz it was cheapest");
 			
 			// Remove edges of cheapest path and current
 			//TODO: Was lazy. At most there are only two new intermediate vertex which we need to check. I.e. redundant loops are performed ...
@@ -446,6 +505,13 @@ public class NearestNeighbour {
 					i--;
 				}
 			}
+			
+			if(!isDebuggingLoop || !Utility.IsDebug) continue;
+			
+			Utility.PrintRoute(result);
+			System.out.println("Added " + cheapestPath.toString() + " cuz it was cheapest");
+			System.out.println(currentPath);
+			System.out.println(potentialEdges.toString());
 		}
 		
 		result.addAll(includedEdges);
@@ -463,10 +529,10 @@ public class NearestNeighbour {
 		if(!Utility.IsATour(g, result)){
 			if(Utility.IsDebug){
 				System.out.println("NN did not give a tour");
-				//Visualization.visualizeSolution(g, Utility.GetFinalNode(result));
+				Visualization.visualizeSolution(g, Utility.GetFinalNode(result));
 			}
 			
-			//assert (false) : "Stuff failed. Is it an error?"; //TODO
+			assert (false) : "Stuff failed. Is it an error?"; //TODO
 			return null;
 		}
 		
@@ -475,7 +541,7 @@ public class NearestNeighbour {
 	
 	private static Edge GetCheapestEdge(List<Edge> potentialEdges,Path innerPath, Path currentPath,Graph g)
 	{
-		return GetCheapestEdge(potentialEdges, innerPath, currentPath, g,true);
+		return GetCheapestEdge(potentialEdges, innerPath, currentPath, g,false);
 	}
 	
 	/** NOTE: Removes edges from potential edges!!! */

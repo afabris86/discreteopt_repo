@@ -5,24 +5,62 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import sun.java2d.pipe.SpanShapeRenderer.Simple;
+
 public class MainMethods {
 	/**
 	 * @param args
 	 * @throws IOException 
 	 */
 	public static void main(String[] args) throws IOException {
+		Solution solution;
+		long start, end;
+		double loadTime;
 		
 		//String data  = "./scpa3.txt";
 		//String data = "./scpc3.txt";
-		//String data = "./scpnrf1.txt";
-		String data = "./scpnrg5.txt";
-		SolveWithRounding(data);
-		SolveWithRandomizedRounding(data);
+		String data = "./scpnrf1.txt";
+		//String data = "./scpnrg5.txt";
+		
+		// Load instance
+		start = System.nanoTime();
+		SetCoverInstance instance = LoadInstancce.Load(data);
+		end = System.nanoTime();
+		loadTime = (end-start)/1000000.0;
+		System.out.printf("Took %.2fms to load and initalise instance",loadTime);
+		System.out.println("\n");
+		
+		start = System.nanoTime();
+		solution = SolveWithRounding(instance);
+		end = System.nanoTime();
+		System.out.println("Objective value with rounding is: " + solution.GetObjectiveValue());
+		System.out.printf("Took %.2fms (%.2fms with load time)",(end-start)/1000000.0,(end-start)/1000000.0+loadTime);
+		System.out.println("\n");
+		
+		start = System.nanoTime();
+		solution = SolveWithRandomizedRounding(instance);
+		end = System.nanoTime();
+		System.out.println("Objective value with random rounding is: " + solution.GetObjectiveValue());
+		System.out.printf("Took %.2fms (%.2fms with load time)",(end-start)/1000000.0,(end-start)/1000000.0+loadTime);
+		System.out.println("\n");
+		
+		start = System.nanoTime();
+		solution = PrimalDualSolver.Solve(instance);
+		end = System.nanoTime();
+		System.out.println("Objective value with primal-dual is: " + solution.GetObjectiveValue());
+		System.out.printf("Took %.2fms (%.2fms with load time)",(end-start)/1000000.0,(end-start)/1000000.0+loadTime);
+		System.out.println("\n");
+		
+		start = System.nanoTime();
+		solution = CplexSolver.Exact(instance);
+		end = System.nanoTime();
+		System.out.println("Cplex exact solution is: " + solution.GetObjectiveValue());
+		System.out.printf("Took %.2fms (%.2fms with load time)",(end-start)/1000000.0,(end-start)/1000000.0+loadTime);
+		System.out.println("\n");
 	}
 	
-	public static void SolveWithRounding(String path) throws IOException{
+	public static Solution SolveWithRounding(SetCoverInstance instance){
 		// Get fractional solution
-		SetCoverInstance instance = LoadInstancce.Load(path);
 		Solution solution = CplexSolver.LPRelxation(instance);
 		
 		// Do rounding
@@ -41,13 +79,14 @@ public class MainMethods {
 		if (Utility.IsDebug)
 			assert (solution.IsILPFeasible()) : "Solution in rouding was not feasible";
 		
-		System.out.println("f is : " + instance.f);
-		System.out.println("Object value with rounding is: " + solution.GetObjectiveValue());
+		if(Utility.IsDebug)
+			System.out.println("f is : " + instance.f);
+		
+		return solution;
 	}
 	
-	public static void SolveWithRandomizedRounding(String path) throws IOException{
+	public static Solution SolveWithRandomizedRounding(SetCoverInstance instance){
 		// Get fractional solution
-		SetCoverInstance instance = LoadInstancce.Load(path);
 		Solution fractionalSolution = CplexSolver.LPRelxation(instance);
 		
 		// Round all Non zero primals to one as they will be referenced later
@@ -85,7 +124,9 @@ public class MainMethods {
 		if(Utility.IsDebug)
 			assert (simulation <= 100) : "Rounding solution exited while loop due to max simulation constrain";
 		
-		System.out.println("Number of simulations before feasible solution: " + simulation);
-		System.out.println("Random rounding objective value: " + integerSolution.GetObjectiveValue());
+		if(Utility.IsDebug) 
+			System.out.println("Number of simulations before feasible solution in random rounding: " + simulation);
+		
+		return integerSolution;
 	}
 }

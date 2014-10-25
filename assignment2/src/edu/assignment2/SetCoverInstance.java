@@ -10,7 +10,7 @@ public class SetCoverInstance {
 	public final int numSets;
 	
 	/** Cost of each set */ 
-	public final double[] Costs;
+	public final int[] Costs;
 	
 	/** Return the number for the vertex covered by most set */
 	public int f;
@@ -26,7 +26,7 @@ public class SetCoverInstance {
 	/** List of sets */
 	public final Set[] Sets;
 	
-	public SetCoverInstance(double[] cst, List<Integer>[] cov){
+	public SetCoverInstance(int[] cst, List<Integer>[] cov){
 		this.Costs = cst;
 		this.numSets = cst.length;
 		this.Sets = new Set[numSets];

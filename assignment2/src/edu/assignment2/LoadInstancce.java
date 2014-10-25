@@ -11,7 +11,7 @@ public class LoadInstancce {
 	public static SetCoverInstance Load(String path) throws IOException{
 		int numVertices;
 		int numSets;
-		double[] cost;
+		int[] cost;
 		List<Integer>[] covers;
 		 
 		// code from http://www.programcreek.com/2011/03/java-read-a-file-line-by-line-code-example/
@@ -30,7 +30,7 @@ public class LoadInstancce {
 		
 		// Read costs 
 		int i = 0;
-		cost = new double[numSets];
+		cost = new int[numSets];
 		while (i < numSets && (line = br.readLine()) != null) {
 			numbers = GetNumbersFromLine(line);
 			for(int num : numbers){

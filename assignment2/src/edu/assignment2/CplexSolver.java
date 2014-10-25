@@ -13,6 +13,23 @@ import ilog.cplex.IloCplex.UnknownObjectException;
 public class CplexSolver {
 	private static IloNumVar[] currentVars;
 	
+	public static Solution Exact(SetCoverInstance instance){
+		IloCplex model;
+		Solution result = null;
+		
+		try {
+			model = GetModel(instance, false);
+			model.solve();
+			if (Utility.IsDebug)
+				System.out.println("Simpelx objective value with LP-relaxtion: " + model.getObjValue());
+			result = GetResult(instance,model);
+		} catch (IloException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
 	public static Solution LPRelxation(SetCoverInstance instance){
 		IloCplex model;
 		Solution result = null;
@@ -21,7 +38,7 @@ public class CplexSolver {
 			model = GetModel(instance, true);
 			model.solve();
 			if (Utility.IsDebug)
-				System.out.println("Simpelx objective value: " + model.getObjValue());
+				System.out.println("Simpelx objective value with LP-relaxtion: " + model.getObjValue());
 			result = GetResult(instance,model);
 		} catch (IloException e) {
 			// TODO Auto-generated catch block

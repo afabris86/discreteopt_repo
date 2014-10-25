@@ -17,4 +17,11 @@ public class Set {
 	public String toString(){
 		return String.format("Set %d covering " + Cover.toString(),Index);
 	}
+	
+	public boolean equals(Object o){
+		if(o instanceof Set){
+			return ((Set)o).Index == this.Index;
+		}
+		return false;
+	}
 }

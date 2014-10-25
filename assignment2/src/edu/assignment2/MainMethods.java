@@ -30,10 +30,12 @@ public class MainMethods {
 		System.out.printf("Took %.2fms to load and initalise instance",loadTime);
 		System.out.println("\n");
 		
+		//NB: Depends on order due to catch. Thus rounding and random rounding have almost same speed
+		
 		start = System.nanoTime();
-		solution = SolveWithRounding(instance);
+		solution = PrimalDualSolver.Solve(instance);
 		end = System.nanoTime();
-		System.out.println("Objective value with rounding is: " + solution.GetObjectiveValue());
+		System.out.println("Objective value with primal-dual is: " + solution.GetObjectiveValue());
 		System.out.printf("Took %.2fms (%.2fms with load time)",(end-start)/1000000.0,(end-start)/1000000.0+loadTime);
 		System.out.println("\n");
 		
@@ -45,9 +47,9 @@ public class MainMethods {
 		System.out.println("\n");
 		
 		start = System.nanoTime();
-		solution = PrimalDualSolver.Solve(instance);
+		solution = SolveWithRounding(instance);
 		end = System.nanoTime();
-		System.out.println("Objective value with primal-dual is: " + solution.GetObjectiveValue());
+		System.out.println("Objective value with rounding is: " + solution.GetObjectiveValue());
 		System.out.printf("Took %.2fms (%.2fms with load time)",(end-start)/1000000.0,(end-start)/1000000.0+loadTime);
 		System.out.println("\n");
 		
@@ -65,7 +67,7 @@ public class MainMethods {
 		
 		// Do rounding
 		double fInv = 1.0 / instance.f;
-		PrimalVariable var;
+		/*PrimalVariable var;
 		for(int i = 0; i < solution.NonZeroPrimals.size(); i++){
 			var = solution.NonZeroPrimals.get(i);
 			if(var.value >= fInv)
@@ -74,13 +76,22 @@ public class MainMethods {
 				solution.NonZeroPrimals.remove(var);
 				i--;
 			}
-		}
+		}*/
+		
+		List<PrimalVariable> vars = new ArrayList<PrimalVariable>();
+		for(PrimalVariable var : solution.NonZeroPrimals)
+			if(var.value >= fInv){
+				vars.add(var);
+				var.value = 1.0;
+			}
+		
+		solution = new Solution(vars, instance);
 		
 		if (Utility.IsDebug)
 			assert (solution.IsILPFeasible()) : "Solution in rouding was not feasible";
 		
 		if(Utility.IsDebug)
-			System.out.println("f is : " + instance.f);
+			System.out.println("f is : " + instance.f + " (the upper bound factor)");
 		
 		return solution;
 	}
@@ -124,9 +135,10 @@ public class MainMethods {
 		if(Utility.IsDebug)
 			assert (simulation <= 100) : "Rounding solution exited while loop due to max simulation constrain";
 		
-		if(Utility.IsDebug) 
+		if(Utility.IsDebug){ 
 			System.out.println("Number of simulations before feasible solution in random rounding: " + simulation);
-		
+			System.out.println("Upper bound factor is: " + maxNumReps);
+		}
 		return integerSolution;
 	}
 }

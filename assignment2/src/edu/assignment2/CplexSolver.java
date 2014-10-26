@@ -2,8 +2,6 @@ package edu.assignment2;
 
 import java.util.List;
 
-import com.sun.xml.internal.messaging.saaj.soap.Envelope;
-
 import ilog.concert.IloException;
 import ilog.concert.IloLinearNumExpr;
 import ilog.concert.IloNumVar;
@@ -20,8 +18,6 @@ public class CplexSolver {
 		try {
 			model = GetModel(instance, false);
 			model.solve();
-			if (Utility.IsDebug)
-				System.out.println("Simpelx objective value with LP-relaxtion: " + model.getObjValue());
 			result = GetResult(instance,model);
 		} catch (IloException e) {
 			// TODO Auto-generated catch block

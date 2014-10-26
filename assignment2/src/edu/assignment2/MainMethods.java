@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import sun.java2d.pipe.SpanShapeRenderer.Simple;
-
 public class MainMethods {
 	/**
 	 * @param args
@@ -100,18 +98,23 @@ public class MainMethods {
 		// Get fractional solution
 		Solution fractionalSolution = CplexSolver.LPRelxation(instance);
 		
-		// Round all Non zero primals to one as they will be referenced later
-		for(PrimalVariable var : fractionalSolution.NonZeroPrimals)
-			var.value = 1.0;
-		
 		// Perform random rounding
 		int simulation;
-		double maxNumReps = Math.log(fractionalSolution.NonZeroPrimals.size());
+		double constant = (instance.numVertecies >=4) ? 2 : Math.log(4*instance.numVertecies) / Math.log(instance.numVertecies);
+		double maxNumReps = constant*Math.log(instance.numVertecies);
+		
+		/* that fail
+		int numNonZeroPrimals = fractionalSolution.NonZeroPrimals.size();
+		System.out.println(numNonZeroPrimals);
+		double constant = (numNonZeroPrimals >=4) ? 2 : Math.log(4*numNonZeroPrimals) / Math.log(numNonZeroPrimals);
+		double maxNumReps = constant*Math.log(numNonZeroPrimals);*/
+		
 		boolean isFeasible = false;
 		Solution integerSolution = null;
 		Random randomGenerator = new Random();
 		List<PrimalVariable> includedVars = new ArrayList<PrimalVariable>();
 		List<PrimalVariable> excludedVars;
+		PrimalVariable excludedVar;
 		
 		simulation = 0;
 		while(simulation > 100 || !isFeasible){
@@ -121,9 +124,11 @@ public class MainMethods {
 			
 			for(int i = 0; i <maxNumReps;i++){
 				for(int j =0; j<excludedVars.size();j++){
-					if(randomGenerator.nextBoolean()) continue;
-					
-					includedVars.add(excludedVars.remove(j));
+					excludedVar = excludedVars.get(j);
+					if(randomGenerator.nextFloat() < excludedVar.value) continue;
+				
+					excludedVars.remove(excludedVar);
+					includedVars.add(new PrimalVariable(excludedVar.Set, 1.0));
 					j--;
 				}
 			}
@@ -137,7 +142,7 @@ public class MainMethods {
 		
 		if(Utility.IsDebug){ 
 			System.out.println("Number of simulations before feasible solution in random rounding: " + simulation);
-			System.out.println("Upper bound factor is: " + maxNumReps);
+			System.out.println("Upper bound factor is: " + maxNumReps / constant);
 		}
 		return integerSolution;
 	}

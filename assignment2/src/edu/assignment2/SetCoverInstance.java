@@ -37,7 +37,7 @@ public class SetCoverInstance {
 		
 		List<Integer> coveringsSets;
 		this.f = 0;
-		for(int vertexIndex = 0; vertexIndex < cov.length; vertexIndex++){
+		for(int vertexIndex = 0; vertexIndex < numVertecies; vertexIndex++){
 			//System.out.println(vertexIndex);
 			
 			CoveringSets[vertexIndex] = new LinkedList<Set>();

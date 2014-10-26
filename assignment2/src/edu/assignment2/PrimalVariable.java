@@ -12,4 +12,7 @@ public class PrimalVariable {
 		this.value = val;
 	}
 	
+	public String toString(){
+		return String.format("x_%d = %.2f", Set.Index, value);
+	}
 }

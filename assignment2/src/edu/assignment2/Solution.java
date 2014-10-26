@@ -48,8 +48,31 @@ public class Solution {
 		}
 		
 		for(boolean b : isVertexCovered)
-			if(!b) return false;
+			if(!b && !Utility.IsDebug) 
+				return false;
 		
-		return true;
+		if(!Utility.IsDebug)
+			return true;
+		
+		List<Integer> unsatisfiedVertices = new ArrayList<Integer>();
+		int i = -1;
+		for(boolean b : isVertexCovered){
+			i++;
+			if(b) continue;
+			
+			unsatisfiedVertices.add(i);
+		}
+		
+		if(unsatisfiedVertices.size() == 0)
+			return true;
+		
+		System.out.println("Unsatisfied constraints are: " + unsatisfiedVertices.toString());
+		return false;
+	}
+	
+	public String toString(){
+		String result = "";
+		for(PrimalVariable var : NonZeroPrimals) result += var.toString() + ", ";
+		return result;
 	}
 }

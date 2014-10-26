@@ -98,18 +98,16 @@ public class MainMethods {
 		// Get fractional solution
 		Solution fractionalSolution = CplexSolver.LPRelxation(instance);
 		
+		if(Utility.IsDebug)
+			System.out.println("Fractional solutions is: " + fractionalSolution.toString());
+		
 		// Perform random rounding
 		int simulation;
 		double constant = (instance.numVertecies >=4) ? 2 : Math.log(4*instance.numVertecies) / Math.log(instance.numVertecies);
 		double maxNumReps = constant*Math.log(instance.numVertecies);
+		double upperBound = 4*maxNumReps*fractionalSolution.GetObjectiveValue();
 		
-		/* that fail
-		int numNonZeroPrimals = fractionalSolution.NonZeroPrimals.size();
-		System.out.println(numNonZeroPrimals);
-		double constant = (numNonZeroPrimals >=4) ? 2 : Math.log(4*numNonZeroPrimals) / Math.log(numNonZeroPrimals);
-		double maxNumReps = constant*Math.log(numNonZeroPrimals);*/
-		
-		boolean isFeasible = false;
+		boolean isFeasibleAndHaveCostWithinBounds = false;
 		Solution integerSolution = null;
 		Random randomGenerator = new Random();
 		List<PrimalVariable> includedVars = new ArrayList<PrimalVariable>();
@@ -117,7 +115,7 @@ public class MainMethods {
 		PrimalVariable excludedVar;
 		
 		simulation = 0;
-		while(simulation > 100 || !isFeasible){
+		while(simulation <= 10 && !isFeasibleAndHaveCostWithinBounds){
 			simulation++;
 			includedVars.clear();
 			excludedVars = new ArrayList<PrimalVariable>(fractionalSolution.NonZeroPrimals);
@@ -125,7 +123,7 @@ public class MainMethods {
 			for(int i = 0; i <maxNumReps;i++){
 				for(int j =0; j<excludedVars.size();j++){
 					excludedVar = excludedVars.get(j);
-					if(randomGenerator.nextFloat() < excludedVar.value) continue;
+					if(randomGenerator.nextFloat() > excludedVar.value) continue;
 				
 					excludedVars.remove(excludedVar);
 					includedVars.add(new PrimalVariable(excludedVar.Set, 1.0));
@@ -134,11 +132,15 @@ public class MainMethods {
 			}
 			
 			integerSolution = new Solution(includedVars, instance);
-			isFeasible = integerSolution.IsILPFeasible();
+			isFeasibleAndHaveCostWithinBounds = integerSolution.IsILPFeasible() && 
+												integerSolution.GetObjectiveValue() <= upperBound;
+			
+			if(!isFeasibleAndHaveCostWithinBounds && Utility.IsDebug)
+				System.out.println("This solution is not feasible or do not meet UB criteria: " + integerSolution.toString());
 		}
 		
 		if(Utility.IsDebug)
-			assert (simulation <= 100) : "Rounding solution exited while loop due to max simulation constrain";
+			assert (simulation <= 10) : "Rounding solution exited while loop due to max simulation constrain";
 		
 		if(Utility.IsDebug){ 
 			System.out.println("Number of simulations before feasible solution in random rounding: " + simulation);

@@ -1,0 +1,97 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 9.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       157,          7]
+NotebookDataLength[      2987,         88]
+NotebookOptionsPosition[      2602,         70]
+NotebookOutlinePosition[      2944,         85]
+CellTagsIndexPosition[      2901,         82]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[BoxData[""], "Input",
+ CellChangeTimes->{{3.6233440044240108`*^9, 3.623344019663783*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{"BinomialDistribution", "[", 
+  RowBox[{"n", ",", 
+   RowBox[{"1", "/", 
+    RowBox[{"(", 
+     RowBox[{"4", "n"}], ")"}]}]}], "]"}], "\[IndentingNewLine]", 
+ RowBox[{"CDF", "[", 
+  RowBox[{"%", ",", "0"}], "]"}]}], "Input",
+ CellChangeTimes->{{3.6233441740708084`*^9, 3.6233441806958246`*^9}, {
+  3.6233442194956236`*^9, 3.623344284432563*^9}, {3.623344329082162*^9, 
+  3.623344334097886*^9}, {3.6233443831009836`*^9, 3.6233443838978653`*^9}, {
+  3.623344553142992*^9, 3.6233445617848988`*^9}, {3.623344773506383*^9, 
+  3.6233447896059656`*^9}, {3.6233448879121156`*^9, 3.6233449021759663`*^9}, {
+  3.623345042332193*^9, 3.62334507373097*^9}, {3.623345124781531*^9, 
+  3.623345125828417*^9}, {3.623345207970525*^9, 3.6233452415760517`*^9}, {
+  3.6233452905744867`*^9, 3.6233452971381807`*^9}}],
+
+Cell[BoxData[
+ FormBox[
+  RowBox[{"BinomialDistribution", "[", 
+   RowBox[{"n", ",", 
+    FractionBox["1", 
+     RowBox[{"4", " ", "n"}]]}], "]"}], TraditionalForm]], "Output",
+ CellChangeTimes->{
+  3.623344235583498*^9, {3.6233442663295965`*^9, 3.6233442848075895`*^9}, 
+   3.623344334441591*^9, 3.623344384616568*^9, 3.6233445622848434`*^9, 
+   3.623344774287669*^9, 3.6233448108625183`*^9, {3.6233450480051975`*^9, 
+   3.6233450745277944`*^9}, 3.623345126765894*^9, {3.623345220362378*^9, 
+   3.623345242263516*^9}, 3.623345297778779*^9}],
+
+Cell[BoxData[
+ FormBox[
+  SuperscriptBox[
+   RowBox[{"(", 
+    RowBox[{"1", "-", 
+     FractionBox["1", 
+      RowBox[{"4", " ", "n"}]]}], ")"}], "n"], TraditionalForm]], "Output",
+ CellChangeTimes->{
+  3.623344235583498*^9, {3.6233442663295965`*^9, 3.6233442848075895`*^9}, 
+   3.623344334441591*^9, 3.623344384616568*^9, 3.6233445622848434`*^9, 
+   3.623344774287669*^9, 3.6233448108625183`*^9, {3.6233450480051975`*^9, 
+   3.6233450745277944`*^9}, 3.623345126765894*^9, {3.623345220362378*^9, 
+   3.623345242263516*^9}, 3.623345297778779*^9}]
+}, Open  ]]
+},
+WindowSize->{701, 848},
+WindowMargins->{{0, Automatic}, {Automatic, 0}},
+FrontEndVersion->"9.0 for Microsoft Windows (64-bit) (January 25, 2013)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[557, 20, 94, 1, 31, "Input"],
+Cell[CellGroupData[{
+Cell[676, 25, 818, 15, 52, "Input"],
+Cell[1497, 42, 541, 11, 49, "Output"],
+Cell[2041, 55, 545, 12, 83, "Output"]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)

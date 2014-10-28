@@ -15,8 +15,8 @@ public class MainMethods {
 		long start, end;
 		double loadTime;
 		
-		//String data  = "./scpa3.txt";
-		String data = "./scpc3.txt";
+		String data  = "./scpa3.txt";
+		//String data = "./scpc3.txt";
 		//String data = "./scpnrf1.txt";
 		//String data = "./scpnrg5.txt";
 		

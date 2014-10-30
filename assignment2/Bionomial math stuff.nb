@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       157,          7]
-NotebookDataLength[      2987,         88]
-NotebookOptionsPosition[      2602,         70]
-NotebookOutlinePosition[      2944,         85]
-CellTagsIndexPosition[      2901,         82]
+NotebookDataLength[      6421,        177]
+NotebookOptionsPosition[      5953,        157]
+NotebookOutlinePosition[      6298,        172]
+CellTagsIndexPosition[      6255,        169]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -30,7 +30,16 @@ Cell[BoxData[{
     RowBox[{"(", 
      RowBox[{"4", "n"}], ")"}]}]}], "]"}], "\[IndentingNewLine]", 
  RowBox[{"CDF", "[", 
-  RowBox[{"%", ",", "0"}], "]"}]}], "Input",
+  RowBox[{"%", ",", "0"}], "]"}], "\[IndentingNewLine]", 
+ RowBox[{"BinomialDistribution", "[", 
+  RowBox[{"n", ",", 
+   RowBox[{"1", "-", 
+    RowBox[{"1", "/", 
+     RowBox[{"(", 
+      RowBox[{"4", "n"}], ")"}]}]}]}], "]"}], "\[IndentingNewLine]", 
+ RowBox[{"CDF", "[", 
+  RowBox[{"%", ",", 
+   RowBox[{"n", "-", "1"}]}], "]"}]}], "Input",
  CellChangeTimes->{{3.6233441740708084`*^9, 3.6233441806958246`*^9}, {
   3.6233442194956236`*^9, 3.623344284432563*^9}, {3.623344329082162*^9, 
   3.623344334097886*^9}, {3.6233443831009836`*^9, 3.6233443838978653`*^9}, {
@@ -38,7 +47,8 @@ Cell[BoxData[{
   3.6233447896059656`*^9}, {3.6233448879121156`*^9, 3.6233449021759663`*^9}, {
   3.623345042332193*^9, 3.62334507373097*^9}, {3.623345124781531*^9, 
   3.623345125828417*^9}, {3.623345207970525*^9, 3.6233452415760517`*^9}, {
-  3.6233452905744867`*^9, 3.6233452971381807`*^9}}],
+  3.6233452905744867`*^9, 3.6233452971381807`*^9}, {3.6234682544113274`*^9, 
+  3.6234683066973286`*^9}}],
 
 Cell[BoxData[
  FormBox[
@@ -51,7 +61,8 @@ Cell[BoxData[
    3.623344334441591*^9, 3.623344384616568*^9, 3.6233445622848434`*^9, 
    3.623344774287669*^9, 3.6233448108625183`*^9, {3.6233450480051975`*^9, 
    3.6233450745277944`*^9}, 3.623345126765894*^9, {3.623345220362378*^9, 
-   3.623345242263516*^9}, 3.623345297778779*^9}],
+   3.623345242263516*^9}, 3.623345297778779*^9, {3.62346825523691*^9, 
+   3.6234683070395703`*^9}}],
 
 Cell[BoxData[
  FormBox[
@@ -65,11 +76,87 @@ Cell[BoxData[
    3.623344334441591*^9, 3.623344384616568*^9, 3.6233445622848434`*^9, 
    3.623344774287669*^9, 3.6233448108625183`*^9, {3.6233450480051975`*^9, 
    3.6233450745277944`*^9}, 3.623345126765894*^9, {3.623345220362378*^9, 
-   3.623345242263516*^9}, 3.623345297778779*^9}]
+   3.623345242263516*^9}, 3.623345297778779*^9, {3.62346825523691*^9, 
+   3.6234683070425725`*^9}}],
+
+Cell[BoxData[
+ FormBox[
+  RowBox[{"BinomialDistribution", "[", 
+   RowBox[{"n", ",", 
+    RowBox[{"1", "-", 
+     FractionBox["1", 
+      RowBox[{"4", " ", "n"}]]}]}], "]"}], TraditionalForm]], "Output",
+ CellChangeTimes->{
+  3.623344235583498*^9, {3.6233442663295965`*^9, 3.6233442848075895`*^9}, 
+   3.623344334441591*^9, 3.623344384616568*^9, 3.6233445622848434`*^9, 
+   3.623344774287669*^9, 3.6233448108625183`*^9, {3.6233450480051975`*^9, 
+   3.6233450745277944`*^9}, 3.623345126765894*^9, {3.623345220362378*^9, 
+   3.623345242263516*^9}, 3.623345297778779*^9, {3.62346825523691*^9, 
+   3.6234683070615587`*^9}}],
+
+Cell[BoxData[
+ FormBox[
+  TagBox[GridBox[{
+     {"\[Piecewise]", GridBox[{
+        {
+         TemplateBox[{FractionBox["1", 
+            RowBox[{"4", " ", "n"}]],RowBox[{
+             RowBox[{"-", 
+               TemplateBox[{"n"}, "Floor"]}], "+", "n", "+", "1"}],
+           TemplateBox[{"n"}, "Floor"]},
+          "BetaRegularized"], 
+         RowBox[{"0", "\[LessEqual]", 
+          RowBox[{"n", "-", "1"}], "\[LessEqual]", "n"}]},
+        {"1", 
+         RowBox[{
+          RowBox[{"n", "-", "1"}], ">", "n"}]}
+       },
+       AllowedDimensions->{2, Automatic},
+       Editable->True,
+       GridBoxAlignment->{
+        "Columns" -> {{Left}}, "ColumnsIndexed" -> {}, "Rows" -> {{Baseline}},
+          "RowsIndexed" -> {}},
+       GridBoxItemSize->{
+        "Columns" -> {{Automatic}}, "ColumnsIndexed" -> {}, "Rows" -> {{1.}}, 
+         "RowsIndexed" -> {}},
+       GridBoxSpacings->{"Columns" -> {
+           Offset[0.27999999999999997`], {
+            Offset[0.84]}, 
+           Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, "Rows" -> {
+           Offset[0.2], {
+            Offset[0.4]}, 
+           Offset[0.2]}, "RowsIndexed" -> {}},
+       Selectable->True]}
+    },
+    GridBoxAlignment->{
+     "Columns" -> {{Left}}, "ColumnsIndexed" -> {}, "Rows" -> {{Baseline}}, 
+      "RowsIndexed" -> {}},
+    GridBoxItemSize->{
+     "Columns" -> {{Automatic}}, "ColumnsIndexed" -> {}, "Rows" -> {{1.}}, 
+      "RowsIndexed" -> {}},
+    GridBoxSpacings->{"Columns" -> {
+        Offset[0.27999999999999997`], {
+         Offset[0.35]}, 
+        Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, "Rows" -> {
+        Offset[0.2], {
+         Offset[0.4]}, 
+        Offset[0.2]}, "RowsIndexed" -> {}}],
+   "Piecewise",
+   DeleteWithContents->True,
+   Editable->False,
+   SelectWithContents->True,
+   Selectable->False], TraditionalForm]], "Output",
+ CellChangeTimes->{
+  3.623344235583498*^9, {3.6233442663295965`*^9, 3.6233442848075895`*^9}, 
+   3.623344334441591*^9, 3.623344384616568*^9, 3.6233445622848434`*^9, 
+   3.623344774287669*^9, 3.6233448108625183`*^9, {3.6233450480051975`*^9, 
+   3.6233450745277944`*^9}, 3.623345126765894*^9, {3.623345220362378*^9, 
+   3.623345242263516*^9}, 3.623345297778779*^9, {3.62346825523691*^9, 
+   3.6234683070655613`*^9}}]
 }, Open  ]]
 },
 WindowSize->{701, 848},
-WindowMargins->{{0, Automatic}, {Automatic, 0}},
+WindowMargins->{{Automatic, 539}, {Automatic, 48}},
 FrontEndVersion->"9.0 for Microsoft Windows (64-bit) (January 25, 2013)",
 StyleDefinitions->"Default.nb"
 ]
@@ -86,9 +173,11 @@ CellTagsIndex->{}
 Notebook[{
 Cell[557, 20, 94, 1, 31, "Input"],
 Cell[CellGroupData[{
-Cell[676, 25, 818, 15, 52, "Input"],
-Cell[1497, 42, 541, 11, 49, "Output"],
-Cell[2041, 55, 545, 12, 83, "Output"]
+Cell[676, 25, 1169, 25, 92, "Input"],
+Cell[1848, 52, 592, 12, 49, "Output"],
+Cell[2443, 66, 596, 13, 50, "Output"],
+Cell[3042, 81, 619, 13, 49, "Output"],
+Cell[3664, 96, 2273, 58, 60, "Output"]
 }, Open  ]]
 }
 ]

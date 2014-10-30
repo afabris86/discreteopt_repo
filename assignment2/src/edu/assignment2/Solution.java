@@ -30,8 +30,8 @@ public class Solution {
 		}
 	}
 	
-	public double GetObjectiveValue(){
-		double result = 0;
+	public int GetObjectiveValue(){
+		int result = 0;
 		for(PrimalVariable var : NonZeroPrimals)
 			result += var.value * Instance.Costs[var.Set.Index];
 		return result;
